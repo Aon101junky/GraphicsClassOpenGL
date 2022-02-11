@@ -1,6 +1,6 @@
-# learnopengl-template
+# GrahpicsClassOpenGL
 
-git clone --recursive https://github.com/EricWRogers/learnopengl-template.git
+git clone --recursive https://github.com/Aon101junky/GraphicsClassOpenGL.git
 -or-
 git clone --recursive git@github.com:EricWRogers/learnopengl-template.git
 
