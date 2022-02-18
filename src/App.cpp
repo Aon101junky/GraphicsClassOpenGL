@@ -1,4 +1,5 @@
 #include "App.hpp"
+#include "math.h"
 
 App::App(){
   Engine::Log("Object Made");
@@ -128,9 +129,20 @@ void App::Draw()
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
 
-  //Draw first triangle
+  //Be sure to activate the shader program before calling any uniforms
 
   glUseProgram(shaderProgram);
+
+  //Update shader uniform
+  double timeValue = SDL_GetTicks() / 1000;
+  float redValue = 0.0;
+  float greenValue = static_cast<float>(sin(timeValue) / 2.0 + 5.0);
+  float blueValue = 0.0;
+  int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+  glUniform4f(vertexColorLocation, redValue, greenValue, blueValue, 1.0f);
+
+  //Render Triangle
+
   glBindVertexArray(VAO);
   glDrawArrays(GL_TRIANGLES, 0, 3);
   glBindVertexArray(0);
