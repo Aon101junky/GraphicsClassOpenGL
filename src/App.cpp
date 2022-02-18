@@ -135,9 +135,9 @@ void App::Draw()
 
   //Update shader uniform
   double timeValue = SDL_GetTicks() / 1000;
-  float redValue = 0.0;
-  float greenValue = static_cast<float>(sin(timeValue) / 2.0 + 5.0);
-  float blueValue = 0.0;
+  float redValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
+  float greenValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
+  float blueValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
   int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
   glUniform4f(vertexColorLocation, redValue, greenValue, blueValue, 1.0f);
 
