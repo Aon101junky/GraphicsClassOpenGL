@@ -87,9 +87,12 @@ void App::Load()
   glDeleteShader(fragmentShader);
 
   float vertices[] = {
-    -0.5f, -0.5f, 0.0f, //left
-    0.5f, -0.5f, 0.0f, //right
-    0.0f, 0.5f, 0.0f //top
+    -0.5f, -0.5f, 0.0f, //Left
+    0.5f, -0.5f, 0.0f, //Right
+    0.0f, 0.5f, 0.0f, //Top
+    -0.25f, 0.0f, 0.0f, //Left mid
+    0.0f, -0.5f, 0.0f, //Bottom Center
+    0.25f, 0.0f, 0.0f //Right Mid
   };
 
   //VBO, VAO
@@ -107,6 +110,8 @@ void App::Load()
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   glBindVertexArray(0);
+
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 }
 void App::Loop()
@@ -144,7 +149,7 @@ void App::Draw()
   //Render Triangle
 
   glBindVertexArray(VAO);
-  glDrawArrays(GL_TRIANGLES, 0, 3);
+  glDrawArrays(GL_TRIANGLES, 0, 6);
   glBindVertexArray(0);
 
 }
