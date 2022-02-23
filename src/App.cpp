@@ -31,7 +31,7 @@ void App::Run(){
 
 void App::Load()
 {
-
+  /*
   //Build and compile shaders
 
   //Vertex shader
@@ -85,6 +85,10 @@ void App::Load()
 
   glDeleteShader(vertexShader);
   glDeleteShader(fragmentShader);
+  */
+
+  shader.Compile("assets/shaders/3.1 Shader.vs", "assets/shaders/3.1 Shader.fs");
+  shader.Link();
 
   float vertices[] = {
     -0.5f, -0.5f, 0.0f, //Left
@@ -135,22 +139,29 @@ void App::Draw()
   glClear(GL_COLOR_BUFFER_BIT);
 
   //Be sure to activate the shader program before calling any uniforms
-
+  /*
   glUseProgram(shaderProgram);
+  */
+
+  shader.Use();
 
   //Update shader uniform
   double timeValue = SDL_GetTicks() / 1000;
   float redValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
   float greenValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
   float blueValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
-  int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-  glUniform4f(vertexColorLocation, redValue, greenValue, blueValue, 1.0f);
+  //int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+  //glUniform4f(vertexColorLocation, redValue, greenValue, blueValue, 1.0f);
+
+  shader.SetVec4("ourColor", glm::vec4(redValue, greenValue, blueValue, 1.0f));
 
   //Render Triangle
 
   glBindVertexArray(VAO);
   glDrawArrays(GL_TRIANGLES, 0, 6);
   glBindVertexArray(0);
+
+  shader.UnUse();
 
 }
 void App::LateUpdate(){}
