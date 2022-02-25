@@ -20,7 +20,7 @@ void App::Run(){
 
   //windowFlags |= Engine::WindowFlags::BORDERLESS;
 
-  window.Create("Engine", 800, 600, windowFlags);
+  window.Create("Engine", 600, 600, windowFlags);
   
   Load();
 
@@ -91,12 +91,15 @@ void App::Load()
   shader.Link();
 
   float vertices[] = {
-    -0.5f, -0.5f, 0.0f, //Left
-    0.5f, -0.5f, 0.0f, //Right
-    0.0f, 0.5f, 0.0f, //Top
-    -0.25f, 0.0f, 0.0f, //Left mid
-    0.0f, -0.5f, 0.0f, //Bottom Center
-    0.25f, 0.0f, 0.0f //Right Mid
+    -1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f,
+    -0.5f, -0.75f, 0.0f, 0.0f, 0.0f, 0.0f,
+    -0.5f, -0.75f, 0.0f, 0.0f, 0.0f, 0.0f,
+    1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f,
+    1.0f, 0.25f, 0.0f, 0.0f, 0.0f, 0.0f,
+    0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+    0.0f, 0.25f, 0.0f, 0.0f, 0.0f, 0.0f,
+    -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+    -1.0f, 0.25f, 0.0f, 0.0f, 0.0f, 0.0f,
   };
 
   //VBO, VAO
@@ -135,7 +138,7 @@ void App::Update(){}
 void App::Draw()
 {
 
-  glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+  //glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
 
   //Be sure to activate the shader program before calling any uniforms
@@ -146,19 +149,19 @@ void App::Draw()
   shader.Use();
 
   //Update shader uniform
-  double timeValue = SDL_GetTicks() / 1000;
-  float redValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
-  float greenValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
-  float blueValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
+  //double timeValue = SDL_GetTicks() / 1000;
+  //float redValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
+  //float greenValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
+  //float blueValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
   //int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
   //glUniform4f(vertexColorLocation, redValue, greenValue, blueValue, 1.0f);
 
-  shader.SetVec4("ourColor", glm::vec4(redValue, greenValue, blueValue, 1.0f));
+  //shader.SetVec4("ourColor", glm::vec4(redValue, greenValue, blueValue, 1.0f));
 
   //Render Triangle
 
   glBindVertexArray(VAO);
-  glDrawArrays(GL_TRIANGLES, 0, 6);
+  glDrawArrays(GL_LINE_LOOP, 0, 9);
   glBindVertexArray(0);
 
   shader.UnUse();
