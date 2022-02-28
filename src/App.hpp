@@ -5,6 +5,8 @@
 #include "Engine/Debug.hpp"
 #include "Engine/Window.hpp"
 #include "Engine/Shader.hpp"
+#include "Engine/IOManager.hpp"
+#include "Engine/Data/GLTexture.hpp"
 
 enum AppState
 {
@@ -37,8 +39,12 @@ private:
 
 	// Move this to external
 
+	unsigned int vertexShader;
 	unsigned int shaderProgram;
-	unsigned int VBO, VAO;
+	unsigned int VBO, VAO, EBO;
+
+	Engine::GLTexture texture1 = {};
+	Engine::GLTexture texture2 = {};
 
 	const char *vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"

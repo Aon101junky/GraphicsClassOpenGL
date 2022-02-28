@@ -87,19 +87,26 @@ void App::Load()
   glDeleteShader(fragmentShader);
   */
 
-  shader.Compile("assets/shaders/3.1 Shader.vs", "assets/shaders/3.1 Shader.fs");
+  shader.Compile("assets/shaders/4.2.texture.vs", "assets/shaders/4.2.texture.fs");
+  shader.AddAttribute("ourColor");
+  shader.AddAttribute("aTexCoord");
   shader.Link();
 
   float vertices[] = {
-    -1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f,
-    -0.5f, -0.75f, 0.0f, 0.0f, 0.0f, 0.0f,
-    -0.5f, -0.75f, 0.0f, 0.0f, 0.0f, 0.0f,
-    1.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f,
-    1.0f, 0.25f, 0.0f, 0.0f, 0.0f, 0.0f,
-    0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-    0.0f, 0.25f, 0.0f, 0.0f, 0.0f, 0.0f,
-    -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-    -1.0f, 0.25f, 0.0f, 0.0f, 0.0f, 0.0f,
+    //Position                Color                 Texture Coordanates
+
+    0.5 0.5 0.0 1.0 00 00 1. 1.
+    .5 -.5 00 00 1. 00 1. 00
+    -.5 -.5 00 00 00 1. 00 00
+    -.5 .5 00 1. 1. 00 00 1.
+
+    // All these need to be floats
+
+  };
+
+  unsigned int indices[] = {
+    0, 1, 3,  //Triangle 1
+    1, 2, 3,  //Triangle 2
   };
 
   //VBO, VAO
