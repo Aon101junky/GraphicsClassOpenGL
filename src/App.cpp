@@ -95,10 +95,10 @@ void App::Load()
   float vertices[] = {
     //Position                Color                 Texture Coordanates
 
-    0.5 0.5 0.0 1.0 00 00 1. 1.
-    .5 -.5 00 00 1. 00 1. 00
-    -.5 -.5 00 00 00 1. 00 00
-    -.5 .5 00 1. 1. 00 00 1.
+    0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
+    0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
+    -0.5, -0.5, 0.0,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
+    -0.5f, 0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f
 
     // All these need to be floats
 
@@ -112,20 +112,42 @@ void App::Load()
   //VBO, VAO
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
+  glGenBuffers(1, &EBO);
 
   glBindVertexArray(VAO);
 
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+//position
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
+//color
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+  glEnableVertexAttribArray(1);
+//texture
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
+  glEnableVertexAttribArray(2);
+
+//Load tex 1
+
+  texture1 = Engine::LoadPNGToGLTexture("assets/textures/container.png", GL_RGBA, GL_RGBA);
+
+//Load tex 2
+
+  texture2 = Engine::LoadPNGToGLTexture("assets/textures/awesomeface.png", GL_RGBA, GL_RGBA);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   glBindVertexArray(0);
 
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  glUniform1i(glGetUniformLocation(shader.GetProgramID(), "texture1"), 0);
+  glUniform1i(glGetUniformLocation(shader.GetProgramID(), "texture2"), 1);
+
+  //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 }
 void App::Loop()
@@ -148,6 +170,12 @@ void App::Draw()
   //glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
 
+  // bind textures to corrisponding units
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, texture1.id);
+  glActiveTexture(GL_TEXTURE1);
+  glBindTexture(GL_TEXTURE_2D, texture2.id);
+  
   //Be sure to activate the shader program before calling any uniforms
   /*
   glUseProgram(shaderProgram);
@@ -168,7 +196,7 @@ void App::Draw()
   //Render Triangle
 
   glBindVertexArray(VAO);
-  glDrawArrays(GL_LINE_LOOP, 0, 9);
+  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
 
   shader.UnUse();
