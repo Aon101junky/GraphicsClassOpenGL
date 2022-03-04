@@ -89,16 +89,17 @@ void App::Load()
 
   shader.Compile("assets/shaders/4.2.texture.vs", "assets/shaders/4.2.texture.fs");
   shader.AddAttribute("ourColor");
-  shader.AddAttribute("aTexCoord");
+  shader.AddAttribute("TexCoord");
   shader.Link();
 
   float vertices[] = {
     //Position                Color                 Texture Coordanates
 
-    0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
+    0.5f, 0.5f, 0.0f,    1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-    -0.5, -0.5, 0.0,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
-    -0.5f, 0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f
+    -0.5, -0.5, 0.0,     0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
+    -0.5f, 0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f,
+   // 0.0f, 0.5f, 0.0f,    0.0f, 0.0f, 1.0f,   0.0f, 1.0f
 
     // All these need to be floats
 
@@ -143,10 +144,10 @@ void App::Load()
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   glBindVertexArray(0);
-
+/*
   glUniform1i(glGetUniformLocation(shader.GetProgramID(), "texture1"), 0);
   glUniform1i(glGetUniformLocation(shader.GetProgramID(), "texture2"), 1);
-
+*/
   //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 }
@@ -182,6 +183,9 @@ void App::Draw()
   */
 
   shader.Use();
+
+  glUniform1i(glGetUniformLocation(shader.GetProgramID(), "texture1"), 0);
+  glUniform1i(glGetUniformLocation(shader.GetProgramID(), "texture2"), 1);
 
   //Update shader uniform
   //double timeValue = SDL_GetTicks() / 1000;
