@@ -50,8 +50,8 @@ private:
     Engine::GLTexture texture1 = {};
     Engine::GLTexture texture2 = {};
 
-    std::chrono::system_clock::time_point currentTime;
-    std::chrono::system_clock::time_point previousTime;
+    std::chrono::steady_clock::time_point currentTime;
+    std::chrono::steady_clock::time_point previousTime;
 
     double deltaTime;
 
