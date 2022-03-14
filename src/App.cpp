@@ -1,66 +1,5 @@
 #include "App.hpp"
 
-// set up vertex data (and buffer(s)) and configure vertex attributes
-// ------------------------------------------------------------------
-float vertices[] = {
-  // positions           // texture coords
-  -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-      0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-  -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-  -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-  -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-  -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-  -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-  -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-      0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-      0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-      0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-      0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-  -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-  -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-  -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-};
-
-// world space positions of our cubes
-glm::vec3 cubePositions[] = {
-  glm::vec3( 0.0f,  0.0f,  0.0f),
-  glm::vec3( 2.0f,  5.0f, -15.0f),
-  glm::vec3(-1.5f, -2.2f, -2.5f),
-  glm::vec3(-3.8f, -2.0f, -12.3f),
-  glm::vec3( 2.4f, -0.4f, -3.5f),
-  glm::vec3(-1.7f,  3.0f, -7.5f),
-  glm::vec3( 1.3f, -2.0f, -2.5f),
-  glm::vec3( 1.5f,  2.0f, -2.5f),
-  glm::vec3( 1.5f,  0.2f, -1.5f),
-  glm::vec3(-1.3f,  1.0f, -1.5f)
-};
-
 App::App()
 {
   Engine::Log("Object Made");
@@ -74,8 +13,8 @@ void App::Run()
 {
   if (appState == AppState::ON)
     Engine::FatalError("App already running.");
-  
-  previousTime = std::chrono::high_resolution_clock::now();
+
+    previousTime = std::chrono::high_resolution_clock::now();
 
   Engine::Init();
 
@@ -98,7 +37,7 @@ void App::Load()
 {
   // build and compile our shader program
   // ------------------------------------
-  shader.Compile("assets/shaders/5.1.transform.vs","assets/shaders/5.1.transform.fs");
+  shader.Compile("assets/shaders/6.3.transform.vs","assets/shaders/6.3.transform.fs");
   shader.AddAttribute("aPos");
   shader.AddAttribute("aTexCoord");
   shader.Link();
@@ -106,18 +45,66 @@ void App::Load()
 
   // set up vertex data (and buffer(s)) and configure vertex attributes
   // ------------------------------------------------------------------
-  float vertices[] = {
-      // positions          // texture coords
-       0.5f,  0.5f, 0.0f,   1.0f, 1.0f,   // top right
-       0.5f, -0.5f, 0.0f,   1.0f, 0.0f,   // bottom right
-      -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,   // bottom left
-      -0.5f,  0.5f, 0.0f,   0.0f, 1.0f    // top left 
-  };
+  // set up vertex data (and buffer(s)) and configure vertex attributes
+// ------------------------------------------------------------------
+float vertices[] = {
+  // positions           // texture coords
+  -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+  0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+  -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+  -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
-  unsigned int indices[] = {
-      0, 1, 3, // first triangle
-      1, 2, 3, // second triangle
-  };
+  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+  0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+  0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+  0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+  -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+  -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+  -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+  -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+  0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+  0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+  0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+  0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+  0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+  0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+  -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+  -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+  -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+};
+
+// world space positions of our cubes
+glm::vec3 cubePositions[] = {
+  glm::vec3( 0.0f,  0.0f,  0.0f),
+  glm::vec3( 2.0f,  5.0f, -15.0f),
+  glm::vec3(-1.5f, -2.2f, -2.5f),
+  glm::vec3(-3.8f, -2.0f, -12.3f),
+  glm::vec3( 2.4f, -0.4f, -3.5f),
+  glm::vec3(-1.7f,  3.0f, -7.5f),
+  glm::vec3( 1.3f, -2.0f, -2.5f),
+  glm::vec3( 1.5f,  2.0f, -2.5f),
+  glm::vec3( 1.5f,  0.2f, -1.5f),
+  glm::vec3(-1.3f,  1.0f, -1.5f)
+};
 
   // unsigned int VBO, VAO;
   glGenVertexArrays(1, &VAO);
@@ -135,6 +122,11 @@ void App::Load()
   // position
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
   glEnableVertexAttribArray(0);
+  // color
+  /*
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
+  glEnableVertexAttribArray(1);
+  */
   // texture coord
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
   glEnableVertexAttribArray(1);
@@ -189,10 +181,10 @@ void App::Draw()
   glUniform1i(glGetUniformLocation(shader.GetProgramID(), "texture1"), 0);
   glUniform1i(glGetUniformLocation(shader.GetProgramID(), "texture2"), 1);
 
-  // create transformations
-  glm::mat4 transform = glm::mat4(1.0f);
+  // create transformation
+  glm::mat4 transform = glm::mat4 (1.0f);
   transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
-  transform = glm::rotate(transform, (float)deltaTime * 100, glm::vec3(0.0f,0.0f,1.0f));
+  transform = glm::rotate(transform, (float)deltaTime * 1.0f, glm::vec3(0.0f, 0.0f, 1.0f));
 
   unsigned int transformLoc = glGetUniformLocation(shader.GetProgramID(), "transform");
   glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
