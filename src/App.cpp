@@ -35,6 +35,8 @@ void App::Run()
 
 void App::Load()
 {
+  glEnable(GL_DEPTH_TEST);
+
   // build and compile our shader program
   // ------------------------------------
   shader.Compile("assets/shaders/6.3.transform.vs","assets/shaders/6.3.transform.fs");
@@ -43,81 +45,16 @@ void App::Load()
   shader.Link();
   
 
-  // set up vertex data (and buffer(s)) and configure vertex attributes
-  // ------------------------------------------------------------------
-  // set up vertex data (and buffer(s)) and configure vertex attributes
-// ------------------------------------------------------------------
-float vertices[] = {
-  // positions           // texture coords
-  -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-  0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-  -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-  -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
-  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-  0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-  0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-  0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-  -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-  -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-  -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-  -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-  0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-  0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-  0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-  0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-  0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-  0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-  -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-  -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-  -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-};
-
-// world space positions of our cubes
-glm::vec3 cubePositions[] = {
-  glm::vec3( 0.0f,  0.0f,  0.0f),
-  glm::vec3( 2.0f,  5.0f, -15.0f),
-  glm::vec3(-1.5f, -2.2f, -2.5f),
-  glm::vec3(-3.8f, -2.0f, -12.3f),
-  glm::vec3( 2.4f, -0.4f, -3.5f),
-  glm::vec3(-1.7f,  3.0f, -7.5f),
-  glm::vec3( 1.3f, -2.0f, -2.5f),
-  glm::vec3( 1.5f,  2.0f, -2.5f),
-  glm::vec3( 1.5f,  0.2f, -1.5f),
-  glm::vec3(-1.3f,  1.0f, -1.5f)
-};
 
   // unsigned int VBO, VAO;
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
-  glGenBuffers(1, &EBO);
   // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
   glBindVertexArray(VAO);
 
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
   // position
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
@@ -167,7 +104,7 @@ void App::Loop()
 void App::Update() {}
 void App::Draw()
 {
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   // bind textures on corresponding texture units
   glActiveTexture(GL_TEXTURE0);
@@ -181,18 +118,30 @@ void App::Draw()
   glUniform1i(glGetUniformLocation(shader.GetProgramID(), "texture1"), 0);
   glUniform1i(glGetUniformLocation(shader.GetProgramID(), "texture2"), 1);
 
-  // create transformation
-  glm::mat4 transform = glm::mat4 (1.0f);
-  transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
-  transform = glm::rotate(transform, (float)deltaTime * 1.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+  glm::mat4 view = glm::mat4(1.0f);
+  glm::mat4 projection = glm::mat4(1.0f);
 
-  unsigned int transformLoc = glGetUniformLocation(shader.GetProgramID(), "transform");
-  glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+  projection = glm::perspective(glm::radians(45.0f), (float)window.GetScreenWidth()/(float)window.GetScreenHeight(), 0.1f, 100.0f);
+  view = glm::translate(view, glm::vec3(0.0f,0.0f,-3.0f));
 
-  // render the triangle
+  glUniformMatrix4fv(glGetUniformLocation(shader.GetProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+  glUniformMatrix4fv(glGetUniformLocation(shader.GetProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
+
+  //render Boxes
   glBindVertexArray(VAO);
-  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-  glBindVertexArray(0);
+
+  for (unsigned int i = 0; i < 10; i++)
+  {
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, cubePositions[i]);
+    float angle = 20.0f * i;
+    model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+    glUniformMatrix4fv(glGetUniformLocation(shader.GetProgramID(), "model"), 1, GL_FALSE, glm::value_ptr(model));
+
+    glDrawArrays(GL_TRIANGLES, 0, 3,0f);
+
+  }
 
   shader.UnUse();
 }
