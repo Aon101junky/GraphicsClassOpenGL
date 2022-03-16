@@ -1,5 +1,66 @@
 #include "App.hpp"
 
+// set up vertex data (and buffer(s)) and configure vertex attributes
+// ------------------------------------------------------------------
+float vertices[] = {
+  // positions           // texture coords
+  -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+      0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+  -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+  -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+      0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+      0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+  -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+  -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+  -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+  -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+      0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+      0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+      0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+      0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+  -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+  -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+  -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+};
+
+// world space positions of our cubes
+glm::vec3 cubePositions[] = {
+  glm::vec3( 0.0f,  0.0f,  0.0f),
+  glm::vec3( 2.0f,  5.0f, -15.0f),
+  glm::vec3(-1.5f, -2.2f, -2.5f),
+  glm::vec3(-3.8f, -2.0f, -12.3f),
+  glm::vec3( 2.4f, -0.4f, -3.5f),
+  glm::vec3(-1.7f,  3.0f, -7.5f),
+  glm::vec3( 1.3f, -2.0f, -2.5f),
+  glm::vec3( 1.5f,  2.0f, -2.5f),
+  glm::vec3( 1.5f,  0.2f, -1.5f),
+  glm::vec3(-1.3f,  1.0f, -1.5f)
+};
+
 App::App()
 {
   Engine::Log("Object Made");
@@ -13,8 +74,8 @@ void App::Run()
 {
   if (appState == AppState::ON)
     Engine::FatalError("App already running.");
-
-    previousTime = std::chrono::high_resolution_clock::now();
+  
+  previousTime = std::chrono::high_resolution_clock::now();
 
   Engine::Init();
 
@@ -35,21 +96,20 @@ void App::Run()
 
 void App::Load()
 {
+  // configure opengle global state
   glEnable(GL_DEPTH_TEST);
 
   // build and compile our shader program
   // ------------------------------------
-  shader.Compile("assets/shaders/6.3.transform.vs","assets/shaders/6.3.transform.fs");
+  shader.Compile("assets/shaders/6.3.coordinate_systems.vs","assets/shaders/6.3.coordinate_systems.fs");
   shader.AddAttribute("aPos");
   shader.AddAttribute("aTexCoord");
   shader.Link();
-  
-
-
 
   // unsigned int VBO, VAO;
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
+
   // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
   glBindVertexArray(VAO);
 
@@ -59,11 +119,6 @@ void App::Load()
   // position
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
   glEnableVertexAttribArray(0);
-  // color
-  /*
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
-  glEnableVertexAttribArray(1);
-  */
   // texture coord
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
   glEnableVertexAttribArray(1);
@@ -124,23 +179,21 @@ void App::Draw()
   projection = glm::perspective(glm::radians(45.0f), (float)window.GetScreenWidth()/(float)window.GetScreenHeight(), 0.1f, 100.0f);
   view = glm::translate(view, glm::vec3(0.0f,0.0f,-3.0f));
 
-  glUniformMatrix4fv(glGetUniformLocation(shader.GetProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-  glUniformMatrix4fv(glGetUniformLocation(shader.GetProgramID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
+  glUniformMatrix4fv(glGetUniformLocation(shader.GetProgramID(),"projection"), 1, GL_FALSE, glm::value_ptr(projection));
+  glUniformMatrix4fv(glGetUniformLocation(shader.GetProgramID(),"view"), 1, GL_FALSE, glm::value_ptr(view));
 
-  //render Boxes
+  // render boxes
   glBindVertexArray(VAO);
 
   for (unsigned int i = 0; i < 10; i++)
   {
-
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, cubePositions[i]);
     float angle = 20.0f * i;
-    model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-    glUniformMatrix4fv(glGetUniformLocation(shader.GetProgramID(), "model"), 1, GL_FALSE, glm::value_ptr(model));
+    model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f,0.3f,0.5f));
+    glUniformMatrix4fv(glGetUniformLocation(shader.GetProgramID(),"model"), 1, GL_FALSE, glm::value_ptr(model));
 
     glDrawArrays(GL_TRIANGLES, 0, 36);
-
   }
 
   shader.UnUse();

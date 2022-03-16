@@ -10,7 +10,9 @@
 #include "Engine/Debug.hpp"
 #include "Engine/Window.hpp"
 #include "Engine/Shader.hpp"
+#include "Engine/Camera.hpp"
 #include "Engine/IOManager.hpp"
+#include "Engine/InputManager.hpp"
 #include "Engine/Data/GLTexture.hpp"
 
 enum AppState
