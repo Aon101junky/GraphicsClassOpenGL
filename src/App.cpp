@@ -101,7 +101,7 @@ void App::Load()
 
   // build and compile our shader program
   // ------------------------------------
-  shader.Compile("assets/shaders/6.3.coordinate_systems.vs","assets/shaders/6.3.coordinate_systems.fs");
+  shader.Compile("assets/shaders/7.4.camera.vs","assets/shaders/7.4.camera.fs");
   shader.AddAttribute("aPos");
   shader.AddAttribute("aTexCoord");
   shader.Link();
@@ -176,8 +176,8 @@ void App::Draw()
   glm::mat4 view = glm::mat4(1.0f);
   glm::mat4 projection = glm::mat4(1.0f);
 
-  projection = glm::perspective(glm::radians(45.0f), (float)window.GetScreenWidth()/(float)window.GetScreenHeight(), 0.1f, 100.0f);
-  view = glm::translate(view, glm::vec3(0.0f,0.0f,-3.0f));
+  projection = glm::perspective(glm::radians(camera.Zoom), (float)window.GetScreenWidth()/(float)window.GetScreenHeight(), 0.1f, 100.0f);
+  view = camera.GetViewMatrix();
 
   glUniformMatrix4fv(glGetUniformLocation(shader.GetProgramID(),"projection"), 1, GL_FALSE, glm::value_ptr(projection));
   glUniformMatrix4fv(glGetUniformLocation(shader.GetProgramID(),"view"), 1, GL_FALSE, glm::value_ptr(view));
@@ -200,7 +200,30 @@ void App::Draw()
 }
 
 void App::LateUpdate() {}
-void App::FixedUpdate(float _delta_time) {}
+void App::FixedUpdate(float dt)
+{
+
+  if (inputManager.isKeyPressed(SDLK_w))
+  {
+    camera.ProcessKeyboard(Engine::Camera_Movement::FORWARD, dt);
+  }
+
+  if (inputManager.isKeyPressed(SDLK_s))
+  {
+    camera.ProcessKeyboard(Engine::Camera_Movement::BACKWARD, dt);
+  }
+
+  if (inputManager.isKeyPressed(SDLK_a))
+  {
+    camera.ProcessKeyboard(Engine::Camera_Movement::LEFT, dt);
+  }
+
+  if (inputManager.isKeyPressed(SDLK_d))
+  {
+    camera.ProcessKeyboard(Engine::Camera_Movement::RIGHT, dt);
+  }
+
+}
 void App::InputUpdate()
 {
   SDL_Event event;
@@ -212,10 +235,16 @@ void App::InputUpdate()
       appState = AppState::OFF;
       break;
     case SDL_MOUSEMOTION:
+      camera.ProcessMouseMovement(
+        event.motion.xrel,
+        -event.motion.yrel
+      );
       break;
     case SDL_KEYUP:
+      inputManager.releasedKey(event.key.keysym.sym);
       break;
     case SDL_KEYDOWN:
+      inputManager.pressKey(event.key.keysym.sym);
       break;
     }
   }

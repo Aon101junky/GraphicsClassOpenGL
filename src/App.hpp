@@ -35,7 +35,7 @@ private:
     void Update();
     void Draw();
     void LateUpdate();
-    void FixedUpdate(float _delta_time);
+    void FixedUpdate(float dt);
     void InputUpdate();
 
     AppState appState = AppState::OFF;
@@ -43,6 +43,10 @@ private:
     Engine::Window window;
 
     Engine::Shader shader;
+
+    Engine::InputManager inputManager;
+
+    Engine::Camera camera = Engine::Camera(glm::vec3(0.0f, 0.0f, -3.0f));
 
     // move out to external class
     unsigned int vertexShader;
