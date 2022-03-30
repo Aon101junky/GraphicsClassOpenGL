@@ -4,47 +4,47 @@
 // ------------------------------------------------------------------
 float vertices[] = {
   // positions           // texture coords
-  -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-      0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-  -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-  -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+  -0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f, -0.5f,
+      0.5f,  0.5f, -0.5f,
+      0.5f,  0.5f, -0.5f,
+  -0.5f,  0.5f, -0.5f,
+  -0.5f, -0.5f, -0.5f,
 
-  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-  -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+  -0.5f, -0.5f,  0.5f,
+      0.5f, -0.5f,  0.5f,
+      0.5f,  0.5f,  0.5f,
+      0.5f,  0.5f,  0.5f,
+  -0.5f,  0.5f,  0.5f,
+  -0.5f, -0.5f,  0.5f,
 
-  -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-  -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-  -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+  -0.5f,  0.5f,  0.5f,
+  -0.5f,  0.5f, -0.5f,
+  -0.5f, -0.5f, -0.5f,
+  -0.5f, -0.5f, -0.5f,
+  -0.5f, -0.5f,  0.5f,
+  -0.5f,  0.5f,  0.5f,
 
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-      0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-      0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-      0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+      0.5f,  0.5f,  0.5f,
+      0.5f,  0.5f, -0.5f,
+      0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f,  0.5f,
+      0.5f,  0.5f,  0.5f,
 
-  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-      0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-  -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-  -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+  -0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f,  0.5f,
+      0.5f, -0.5f,  0.5f,
+  -0.5f, -0.5f,  0.5f,
+  -0.5f, -0.5f, -0.5f,
 
-  -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-  -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-  -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+  -0.5f,  0.5f, -0.5f,
+      0.5f,  0.5f, -0.5f,
+      0.5f,  0.5f,  0.5f,
+      0.5f,  0.5f,  0.5f,
+  -0.5f,  0.5f,  0.5f,
+  -0.5f,  0.5f, -0.5f,
 };
 
 // world space positions of our cubes
@@ -60,6 +60,8 @@ glm::vec3 cubePositions[] = {
   glm::vec3( 1.5f,  0.2f, -1.5f),
   glm::vec3(-1.3f,  1.0f, -1.5f)
 };
+
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 App::App()
 {
@@ -98,33 +100,34 @@ void App::Load()
   glEnable(GL_DEPTH_TEST);
 
   // build and compile our shader program
-  shader.Compile("assets/shaders/7.4.camera.vs", "assets/shaders/7.4.camera.fs");
-  shader.AddAttribute("aPos");
-  shader.AddAttribute("aTexCoord");
-  shader.Link();
+  lightingShader.Compile("assets/shaders/1.colors.vs", "assets/shaders/1.colors.fs");
+  lightingShader.AddAttribute("aPos");
+  lightingShader.Link();
+
+  lightCubeShader.Compile("assets/shaders/1.light_cube.vs", "assets/shaders/1.light_cube.fs");
+  lightCubeShader.AddAttribute("aPos");
+  lightCubeShader.Link();
 
   //unsigned int VBO, VAO;
-  glGenVertexArrays(1, &VAO);
+  glGenVertexArrays(1, &cubeVAO);
+
   glGenBuffers(1, &VBO);
-
-  // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-  glBindVertexArray(VAO);
-
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+  // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+  glBindVertexArray(cubeVAO);
+
   // position attribute
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
 
-  // texture coord attribute
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-  glEnableVertexAttribArray(1);
+  glGenVertexArrays(1, &lightCubeVAO);
+  glBindVertexArray(lightCubeVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-  // load texture 1
-  texture1 = Engine::LoadPNGToGLTexture("assets/textures/container.png", GL_RGBA, GL_RGBA);
-  // load texture 2
-  texture2 = Engine::LoadPNGToGLTexture("assets/textures/awesomeface.png", GL_RGBA, GL_RGBA);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
 
   // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
   glBindBuffer(GL_ARRAY_BUFFER, 0); 
@@ -133,19 +136,6 @@ void App::Load()
   // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
   glBindVertexArray(0);
 
-  // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
-  // -------------------------------------------------------------------------------------------
-  shader.Use(); // don't forget to activate/use the shader before setting uniforms!
-  // either set it manually like so:
-  glUniform1i(glGetUniformLocation(shader.GetProgramID(), "texture1"), 0);
-  glUniform1i(glGetUniformLocation(shader.GetProgramID(), "texture2"), 1);
-  // or set it via the texture class
-  //shader.SetInt("texture1", 0);
-  //shader.SetInt("texture2", 1);
-
-  // wireframe
-  // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-  // fill
   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
 
   // start timer
@@ -195,14 +185,10 @@ void App::Draw()
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
 
-  // bind textures on corresponding texture units
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, texture1.id);
-  glActiveTexture(GL_TEXTURE1);
-  glBindTexture(GL_TEXTURE_2D, texture2.id);
-
   // activate shader
-  shader.Use();
+  lightingShader.Use();
+  lightingShader.SetVec3("objectColor", 1.0f, 0.5f, 0.31f);
+  lightingShader.SetVec3("lightColor", 1.0f, 1.0f, 1.0f);
 
   // create transformations
   glm::mat4 view          = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
@@ -210,24 +196,31 @@ void App::Draw()
   projection = glm::perspective(glm::radians(camera.Zoom), (float)window.GetScreenWidth() / (float)window.GetScreenHeight(), 0.1f, 100.0f);
   view       = camera.GetViewMatrix();
   // pass transformation matrices to the shader
-  shader.SetMat4("projection", projection); // note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
-  shader.SetMat4("view", view);
+  lightingShader.SetMat4("projection", projection); // note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
+  lightingShader.SetMat4("view", view);
 
   // render boxes
-  glBindVertexArray(VAO);
-  for (unsigned int i = 0; i < 10; i++)
-  {
-      // calculate the model matrix for each object and pass it to shader before drawing
+  glBindVertexArray(cubeVAO);
+
       glm::mat4 model = glm::mat4(1.0f);
-      model = glm::translate(model, cubePositions[i]);
-      float angle = 20.0f * i;
-      model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-      shader.SetMat4("model", model);
+      lightingShader.SetMat4("model", model);
 
       glDrawArrays(GL_TRIANGLES, 0, 36);
-  }
 
-  shader.UnUse();
+  lightingShader.UnUse();
+
+  lightCubeShader.Use();
+  lightCubeShader.SetMat4("projection", projection);
+  lightCubeShader.SetMat4("view", view);
+
+  model = glm::mat4(1.0f);
+  model = glm::translate(model, lightPos);
+  model = glm::scale(model, glm::vec3(0.2f));
+  lightCubeShader.SetMat4("model", model);
+
+  glBindVertexArray(lightCubeVAO);
+  glDrawArrays(GL_TRIANGLES, 0, 36);
+  lightCubeShader.UnUse();
 }
 
 void App::LateUpdate() {}

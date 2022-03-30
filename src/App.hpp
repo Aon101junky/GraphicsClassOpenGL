@@ -49,7 +49,9 @@ private:
 
     Engine::Window window;
 
-    Engine::Shader shader;
+    Engine::Shader lightingShader;
+
+    Engine::Shader lightCubeShader;
 
     Engine::Camera camera = Engine::Camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
@@ -58,7 +60,7 @@ private:
     // move out to external class
     unsigned int vertexShader;
     unsigned int shaderProgram;
-    unsigned int VBO, VAO, EBO;
+    unsigned int VBO, cubeVAO, lightCubeVAO;
 
     Engine::GLTexture texture1 = {};
     Engine::GLTexture texture2 = {};
