@@ -15,6 +15,13 @@
 #include "Engine/InputManager.hpp"
 #include "Engine/Data/GLTexture.hpp"
 
+#ifdef __linux__
+using namespace std::chrono::_V2;
+#elif _WIN32
+using namespace std::chrono;
+#else
+#endif
+
 enum AppState
 {
     ON,
@@ -35,7 +42,7 @@ private:
     void Update();
     void Draw();
     void LateUpdate();
-    void FixedUpdate(float dt);
+    void FixedUpdate(float _delta_time);
     void InputUpdate();
 
     AppState appState = AppState::OFF;
@@ -44,9 +51,9 @@ private:
 
     Engine::Shader shader;
 
-    Engine::InputManager inputManager;
+    Engine::Camera camera = Engine::Camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
-    Engine::Camera camera = Engine::Camera(glm::vec3(0.0f, 0.0f, -3.0f));
+    Engine::InputManager inputManager;
 
     // move out to external class
     unsigned int vertexShader;
@@ -56,26 +63,8 @@ private:
     Engine::GLTexture texture1 = {};
     Engine::GLTexture texture2 = {};
 
-    std::chrono::steady_clock::time_point currentTime;
-    std::chrono::steady_clock::time_point previousTime;
+    high_resolution_clock::time_point currentTime;
+    high_resolution_clock::time_point previousTime;
 
-    double deltaTime;
-
-    const char *vertexShaderSource = "#version 330 core\n"
-                                     "layout (location = 0) in vec3 aPos;\n"
-                                     "layout (location = 1) in vec3 aColor;\n"
-                                     "out vec3 ourColor;\n"
-                                     "void main()\n"
-                                     "{\n"
-                                     "   gl_Position = vec4(aPos, 1.0);\n"
-                                     "   ourColor = aColor;\n"
-                                     "}\0";
-
-    const char *fragmentShaderSource = "#version 330 core\n"
-                                       "out vec4 FragColor;\n"
-                                       "in vec3 ourColor;\n"
-                                       "void main()\n"
-                                       "{\n"
-                                       "   FragColor = vec4(ourColor, 1.0);\n"
-                                       "}\n\0";
+    float deltaTime;
 };

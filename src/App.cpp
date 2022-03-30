@@ -74,8 +74,6 @@ void App::Run()
 {
   if (appState == AppState::ON)
     Engine::FatalError("App already running.");
-  
-  previousTime = std::chrono::high_resolution_clock::now();
 
   Engine::Init();
 
@@ -96,17 +94,16 @@ void App::Run()
 
 void App::Load()
 {
-  // configure opengle global state
+  // configure global opengl state
   glEnable(GL_DEPTH_TEST);
 
   // build and compile our shader program
-  // ------------------------------------
-  shader.Compile("assets/shaders/7.4.camera.vs","assets/shaders/7.4.camera.fs");
+  shader.Compile("assets/shaders/7.4.camera.vs", "assets/shaders/7.4.camera.fs");
   shader.AddAttribute("aPos");
   shader.AddAttribute("aTexCoord");
   shader.Link();
 
-  // unsigned int VBO, VAO;
+  //unsigned int VBO, VAO;
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
 
@@ -116,11 +113,12 @@ void App::Load()
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-  // position
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
+  // position attribute
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
-  // texture coord
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
+
+  // texture coord attribute
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
   glEnableVertexAttribArray(1);
 
   // load texture 1
@@ -129,37 +127,73 @@ void App::Load()
   texture2 = Engine::LoadPNGToGLTexture("assets/textures/awesomeface.png", GL_RGBA, GL_RGBA);
 
   // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0); 
 
   // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
   // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
   glBindVertexArray(0);
 
+  // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
+  // -------------------------------------------------------------------------------------------
+  shader.Use(); // don't forget to activate/use the shader before setting uniforms!
+  // either set it manually like so:
+  glUniform1i(glGetUniformLocation(shader.GetProgramID(), "texture1"), 0);
+  glUniform1i(glGetUniformLocation(shader.GetProgramID(), "texture2"), 1);
+  // or set it via the texture class
+  //shader.SetInt("texture1", 0);
+  //shader.SetInt("texture2", 1);
+
+  // wireframe
+  // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+  // fill
   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+
+  // start timer
+  previousTime = high_resolution_clock::now();
 }
 
 void App::Loop()
 {
   while (appState == AppState::ON)
   {
-    currentTime = std::chrono::high_resolution_clock::now();
+    currentTime = high_resolution_clock::now();
     deltaTime = std::chrono::duration_cast<std::chrono::nanoseconds>(currentTime - previousTime).count() / 1000000000.0;
     previousTime = currentTime;
-    Engine::Log(std::to_string(deltaTime));
 
     Update();
     Draw();
     // Get SDL to swap our buffer
     window.SwapBuffer();
     LateUpdate();
-    FixedUpdate(0.0f);
+    FixedUpdate(deltaTime);
     InputUpdate();
   }
 }
-void App::Update() {}
+void App::Update()
+{
+  if (inputManager.isKeyPressed(SDLK_w))
+  {
+    camera.ProcessKeyboard(Engine::Camera_Movement::FORWARD, deltaTime);
+  }
+
+  if (inputManager.isKeyPressed(SDLK_s))
+  {
+    camera.ProcessKeyboard(Engine::Camera_Movement::BACKWARD, deltaTime);
+  }
+
+  if (inputManager.isKeyPressed(SDLK_a))
+  {
+    camera.ProcessKeyboard(Engine::Camera_Movement::LEFT, deltaTime);
+  }
+
+  if (inputManager.isKeyPressed(SDLK_d))
+  {
+    camera.ProcessKeyboard(Engine::Camera_Movement::RIGHT, deltaTime);
+  }
+}
 void App::Draw()
 {
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
 
   // bind textures on corresponding texture units
   glActiveTexture(GL_TEXTURE0);
@@ -167,63 +201,37 @@ void App::Draw()
   glActiveTexture(GL_TEXTURE1);
   glBindTexture(GL_TEXTURE_2D, texture2.id);
 
-  // be sure to activate the shader before any calls to glUniform
+  // activate shader
   shader.Use();
 
-  glUniform1i(glGetUniformLocation(shader.GetProgramID(), "texture1"), 0);
-  glUniform1i(glGetUniformLocation(shader.GetProgramID(), "texture2"), 1);
-
-  glm::mat4 view = glm::mat4(1.0f);
-  glm::mat4 projection = glm::mat4(1.0f);
-
-  projection = glm::perspective(glm::radians(camera.Zoom), (float)window.GetScreenWidth()/(float)window.GetScreenHeight(), 0.1f, 100.0f);
-  view = camera.GetViewMatrix();
-
-  glUniformMatrix4fv(glGetUniformLocation(shader.GetProgramID(),"projection"), 1, GL_FALSE, glm::value_ptr(projection));
-  glUniformMatrix4fv(glGetUniformLocation(shader.GetProgramID(),"view"), 1, GL_FALSE, glm::value_ptr(view));
+  // create transformations
+  glm::mat4 view          = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+  glm::mat4 projection    = glm::mat4(1.0f);
+  projection = glm::perspective(glm::radians(camera.Zoom), (float)window.GetScreenWidth() / (float)window.GetScreenHeight(), 0.1f, 100.0f);
+  view       = camera.GetViewMatrix();
+  // pass transformation matrices to the shader
+  shader.SetMat4("projection", projection); // note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
+  shader.SetMat4("view", view);
 
   // render boxes
   glBindVertexArray(VAO);
-
   for (unsigned int i = 0; i < 10; i++)
   {
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, cubePositions[i]);
-    float angle = 20.0f * i;
-    model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f,0.3f,0.5f));
-    glUniformMatrix4fv(glGetUniformLocation(shader.GetProgramID(),"model"), 1, GL_FALSE, glm::value_ptr(model));
+      // calculate the model matrix for each object and pass it to shader before drawing
+      glm::mat4 model = glm::mat4(1.0f);
+      model = glm::translate(model, cubePositions[i]);
+      float angle = 20.0f * i;
+      model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+      shader.SetMat4("model", model);
 
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+      glDrawArrays(GL_TRIANGLES, 0, 36);
   }
 
   shader.UnUse();
 }
 
 void App::LateUpdate() {}
-void App::FixedUpdate(float dt)
-{
-
-  if (inputManager.isKeyPressed(SDLK_w))
-  {
-    camera.ProcessKeyboard(Engine::Camera_Movement::FORWARD, dt);
-  }
-
-  if (inputManager.isKeyPressed(SDLK_s))
-  {
-    camera.ProcessKeyboard(Engine::Camera_Movement::BACKWARD, dt);
-  }
-
-  if (inputManager.isKeyPressed(SDLK_a))
-  {
-    camera.ProcessKeyboard(Engine::Camera_Movement::LEFT, dt);
-  }
-
-  if (inputManager.isKeyPressed(SDLK_d))
-  {
-    camera.ProcessKeyboard(Engine::Camera_Movement::RIGHT, dt);
-  }
-
-}
+void App::FixedUpdate(float dt) {}
 void App::InputUpdate()
 {
   SDL_Event event;
