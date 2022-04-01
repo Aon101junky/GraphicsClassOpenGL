@@ -60,7 +60,7 @@ private:
     // move out to external class
     unsigned int vertexShader;
     unsigned int shaderProgram;
-    unsigned int VBO, cubeVAO, lightCubeVAO;
+    unsigned int VBO, cubeVAO, lightCubeVAO, EBO;
 
     Engine::GLTexture texture1 = {};
     Engine::GLTexture texture2 = {};
