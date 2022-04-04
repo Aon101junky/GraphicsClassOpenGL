@@ -86,7 +86,7 @@ void App::Load()
     glEnable(GL_DEPTH_TEST);
 
     // build and compile our shader program
-    lightingShader.Compile("assets/shaders/2.2.basic_lighting.vs", "assets/shaders/2.2.basic_lighting.fs");
+    lightingShader.Compile("assets/shaders/3.1.materials.vs", "assets/shaders/3.1.materials.fs");
     lightingShader.AddAttribute("aPos");
     lightingShader.AddAttribute("aNormal");
     lightingShader.Link();
@@ -175,12 +175,28 @@ void App::Draw()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
 
-    // be sure to activate shader when setting uniforms/drawing objects
     lightingShader.Use();
-    lightingShader.SetVec3("objectColor", 1.0f, 0.5f, 0.31f);
-    lightingShader.SetVec3("lightColor",  1.0f, 1.0f, 1.0f);
-    lightingShader.SetVec3("lightPos", lightPos);
     lightingShader.SetVec3("viewPos", camera.Position);
+
+    glm::vec3 lightColor;
+    lightColor.x = static_cast<float>(sin(SDL_GetTicks() * 0.002));
+    lightColor.y = static_cast<float>(sin(SDL_GetTicks() * 0.0007));
+    lightColor.z = static_cast<float>(sin(SDL_GetTicks() * 0.0013));
+
+    glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+    glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
+
+    // light struct
+    lightingShader.SetVec3("light.position", lightPos);
+    lightingShader.SetVec3("light.ambient", ambientColor);
+    lightingShader.SetVec3("light.dffuse", diffuseColor);
+    lightingShader.SetVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+    // material struct
+    lightingShader.SetVec3("material.ambient", 0.135f, 0.2225f, 0.1575f);
+    lightingShader.SetVec3("material.dffuse", 0.54f, 0.09f, 0.63f);
+    lightingShader.SetVec3("material.specular", 0.31f, 0.31f, 0.31f);
+    lightingShader.SetFloat("material.shininess", 32.0f);
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)window.GetScreenWidth() / (float)window.GetScreenHeight(), 0.1f, 100.0f);
