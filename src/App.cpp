@@ -87,9 +87,10 @@ void App::Load()
     glEnable(GL_DEPTH_TEST);
 
     // build and compile our shader program
-    lightingShader.Compile("assets/shaders/3.1.materials.vs", "assets/shaders/3.1.materials.fs");
+    lightingShader.Compile("assets/shaders/4.2.lighting_map.vs", "assets/shaders/4.2.lighting_map.fs");
     lightingShader.AddAttribute("aPos");
     lightingShader.AddAttribute("aNormal");
+    lightingShader.AddAttribute("aTexCoords");
     lightingShader.Link();
 
     lightCubeShader.Compile("assets/shaders/3.1.light_cube.vs", "assets/shaders/3.1.light_cube.fs");
@@ -105,11 +106,14 @@ void App::Load()
     glBindVertexArray(cubeVAO);
 
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     // normal attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    // texcoords attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     // second, configure the light's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
     glGenVertexArrays(1, &lightCubeVAO);
@@ -119,8 +123,12 @@ void App::Load()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
     // note that we update the lamp's position attribute's stride to reflect the updated buffer data
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    // load textures
+    diffuseTexture = Engine::LoadPNGToGLTexture("assets/textures/container2.png", GL_RGBA, GL_RGBA);
+    specularTexture = Engine::LoadPNGToGLTexture("assets/textures/container2_specular.png", GL_RGBA, GL_RGBA);
 
     // wireframe
     // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
@@ -173,6 +181,10 @@ void App::Update()
 }
 void App::Draw()
 {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, diffuseTexture.id);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, specularTexture.id);
     // render
     // ------
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -195,9 +207,8 @@ void App::Draw()
     lightingShader.SetVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
     // material properties
-    lightingShader.SetVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-    lightingShader.SetVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
-    lightingShader.SetVec3("material.specular", 0.5f, 0.5f, 0.5f); // specular lighting doesn't have full effect on this object's material
+    lightingShader.SetInt("material.diffuse", 0);
+    lightingShader.SetInt("material.specular", 1); // specular lighting doesn't have full effect on this object's material
     lightingShader.SetFloat("material.shininess", 32.0f);
 
     // view/projection transformations

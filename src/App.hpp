@@ -62,8 +62,8 @@ private:
     unsigned int shaderProgram;
     unsigned int VBO, cubeVAO, lightCubeVAO, EBO;
 
-    Engine::GLTexture texture1 = {};
-    Engine::GLTexture texture2 = {};
+    Engine::GLTexture diffuseTexture = {};
+    Engine::GLTexture specularTexture = {};
 
     high_resolution_clock::time_point currentTime;
     high_resolution_clock::time_point previousTime;
