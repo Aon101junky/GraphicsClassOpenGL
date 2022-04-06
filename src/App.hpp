@@ -42,7 +42,7 @@ private:
     void Update();
     void Draw();
     void LateUpdate();
-    void FixedUpdate(float _delta_time);
+    void FixedUpdate(float dt);
     void InputUpdate();
 
     AppState appState = AppState::OFF;

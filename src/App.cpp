@@ -3,47 +3,48 @@
 // set up vertex data (and buffer(s)) and configure vertex attributes
 // ------------------------------------------------------------------
 float vertices[] = {
-    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-    0.5f, -0.5f, -0.5f,  0.0f, 0.0f, -1.0f,
-    0.5f,  0.5f, -0.5f,  0.0f, 0.0f, -1.0f,
-    0.5f,  0.5f, -0.5f,  0.0f, 0.0f, -1.0f,
-    -0.5f,  0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+    // positions          // normals           // texture coords
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
 
-    -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-    0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f,
-    0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f,
-    0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
 
-    -0.5f,  0.5f,  0.5f, -1.0f, 0.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f, -1.0f, 0.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f, -1.0f, 0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
 
-    0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
-    0.5f,  0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
-    0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
-    0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
-    0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
-    0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
 
-    -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
-    0.5f, -0.5f, -0.5f,  0.0f, -1.0f, 0.0f,
-    0.5f, -0.5f,  0.5f,  0.0f, -1.0f, 0.0f,
-    0.5f, -0.5f,  0.5f,  0.0f, -1.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f, 0.0f, -1.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
 
-    -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-    0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f,
-    0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,
-    0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
 };
 
 // lighting
@@ -91,7 +92,7 @@ void App::Load()
     lightingShader.AddAttribute("aNormal");
     lightingShader.Link();
 
-    lightCubeShader.Compile("assets/shaders/2.2.light_cube.vs", "assets/shaders/2.2.light_cube.fs");
+    lightCubeShader.Compile("assets/shaders/3.1.light_cube.vs", "assets/shaders/3.1.light_cube.fs");
     lightCubeShader.AddAttribute("aPos");
     lightCubeShader.Link();
 
@@ -106,19 +107,18 @@ void App::Load()
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-
     // normal attribute
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
     // second, configure the light's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
-    unsigned int lightCubeVAO;
     glGenVertexArrays(1, &lightCubeVAO);
     glBindVertexArray(lightCubeVAO);
 
     // we only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need (it's already bound, but we do it again for educational purposes)
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
+    // note that we update the lamp's position attribute's stride to reflect the updated buffer data
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
@@ -173,35 +173,39 @@ void App::Update()
 }
 void App::Draw()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
+    // render
+    // ------
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // be sure to activate shader when setting uniforms/drawing objects
     lightingShader.Use();
+    lightingShader.SetVec3("light.position", lightPos);
     lightingShader.SetVec3("viewPos", camera.Position);
 
+    // light properties
     glm::vec3 lightColor;
     lightColor.x = static_cast<float>(sin(SDL_GetTicks() * 0.002));
     lightColor.y = static_cast<float>(sin(SDL_GetTicks() * 0.0007));
     lightColor.z = static_cast<float>(sin(SDL_GetTicks() * 0.0013));
-
-    glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
-    glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
-
-    // light struct
-    lightingShader.SetVec3("light.position", lightPos);
+    glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
+    glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
     lightingShader.SetVec3("light.ambient", ambientColor);
-    lightingShader.SetVec3("light.dffuse", diffuseColor);
+    lightingShader.SetVec3("light.diffuse", diffuseColor);
     lightingShader.SetVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
-    // material struct
-    lightingShader.SetVec3("material.ambient", 0.135f, 0.2225f, 0.1575f);
-    lightingShader.SetVec3("material.dffuse", 0.54f, 0.09f, 0.63f);
-    lightingShader.SetVec3("material.specular", 0.31f, 0.31f, 0.31f);
+    // material properties
+    lightingShader.SetVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+    lightingShader.SetVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+    lightingShader.SetVec3("material.specular", 0.5f, 0.5f, 0.5f); // specular lighting doesn't have full effect on this object's material
     lightingShader.SetFloat("material.shininess", 32.0f);
 
     // view/projection transformations
-    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)window.GetScreenWidth() / (float)window.GetScreenHeight(), 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(
+        glm::radians(camera.Zoom), 
+        (float)window.GetScreenWidth() / (float)window.GetScreenHeight(), 
+        0.1f, 100.0f);
     glm::mat4 view = camera.GetViewMatrix();
-
     lightingShader.SetMat4("projection", projection);
     lightingShader.SetMat4("view", view);
 
@@ -212,8 +216,6 @@ void App::Draw()
     // render the cube
     glBindVertexArray(cubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-
-    lightingShader.UnUse();
 
 
     // also draw the lamp object
@@ -227,7 +229,7 @@ void App::Draw()
 
     glBindVertexArray(lightCubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-    lightCubeShader.UnUse();
+    lightCubeShader.Use();
 }
 
 void App::LateUpdate() {}
