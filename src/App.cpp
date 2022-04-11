@@ -47,6 +47,74 @@
         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
     };
 
+        float lightVertices[] = {
+        // positions
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+
+        -0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
+
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f, -0.5f,
+
+        -0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f
+    };
+    
+
+    // positions all containers
+    glm::vec3 cubePositions[] = {
+        glm::vec3( 0.0f,  0.0f,  0.0f),
+        glm::vec3( 2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3( 2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3( 1.3f, -2.0f, -2.5f),
+        glm::vec3( 1.5f,  2.0f, -2.5f),
+        glm::vec3( 1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
+
+    // positions of the point lights
+    glm::vec3 pointLightPositions[] = {
+        glm::vec3( 0.7f,  0.2f,  2.0f),
+        glm::vec3( 2.3f, -3.3f, -4.0f),
+        glm::vec3(-4.0f,  2.0f, -12.0f),
+        glm::vec3( 0.0f,  0.0f, -3.0f)
+    };
+
 // lighting
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
@@ -74,6 +142,9 @@ void App::Run()
 
     window.Create("Engine", 800, 600, windowFlags);
 
+    SDL_CaptureMouse(SDL_TRUE);
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+
     Load();
 
     appState = AppState::ON;
@@ -87,13 +158,13 @@ void App::Load()
     glEnable(GL_DEPTH_TEST);
 
     // build and compile our shader program
-    lightingShader.Compile("assets/shaders/4.2.lighting_map.vs", "assets/shaders/4.2.lighting_map.fs");
+    lightingShader.Compile("assets/shaders/6.multiple_lights.vs", "assets/shaders/6.multiple_lights.fs");
     lightingShader.AddAttribute("aPos");
     lightingShader.AddAttribute("aNormal");
     lightingShader.AddAttribute("aTexCoords");
     lightingShader.Link();
 
-    lightCubeShader.Compile("assets/shaders/4.2.light_cube.vs", "assets/shaders/4.2.light_cube.fs");
+    lightCubeShader.Compile("assets/shaders/6.light_cube.vs", "assets/shaders/6.light_cube.fs");
     lightCubeShader.AddAttribute("aPos");
     lightCubeShader.Link();
 
@@ -117,13 +188,15 @@ void App::Load()
 
     // second, configure the light's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
     glGenVertexArrays(1, &lightCubeVAO);
+    glGenBuffers(1, &lightVBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, lightVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(lightVertices), lightVertices, GL_STATIC_DRAW);
+
     glBindVertexArray(lightCubeVAO);
 
-    // we only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need (it's already bound, but we do it again for educational purposes)
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
     // note that we update the lamp's position attribute's stride to reflect the updated buffer data
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // load diffuse texture
@@ -177,7 +250,22 @@ void App::Update()
     if (inputManager.isKeyPressed(SDLK_d))
     {
         camera.ProcessKeyboard(Engine::Camera_Movement::RIGHT, deltaTime);
-        Engine::Log("Right");
+    }
+
+    if (inputManager.isKeyPressed(SDLK_ESCAPE))
+    {
+        mouseLock = !mouseLock;
+
+        if (mouseLock)
+        {
+            SDL_CaptureMouse(SDL_TRUE);
+            SDL_SetRelativeMouseMode(SDL_TRUE);
+        }
+        else
+        {
+            SDL_CaptureMouse(SDL_FALSE);
+            SDL_SetRelativeMouseMode(SDL_FALSE);
+        }
     }
 }
 void App::Draw()
@@ -191,16 +279,24 @@ void App::Draw()
     lightingShader.Use();
     lightingShader.SetVec3("viewPos", camera.Position);
 
-    // light properties
-    lightingShader.SetVec3("light.position", lightPos);
-    lightingShader.SetVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-    lightingShader.SetVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-    lightingShader.SetVec3("light.specular", 1.0f, 1.0f, 1.0f);
+    /*
+        Here we set all the uniforms for the 5/6 types of lights we have. We have to set them manually and index 
+        the proper PointLight struct in the array to set each uniform variable. This can be done more code-friendly
+        by defining light types as classes and set their values in there, or by using a more efficient uniform approach
+        by using 'Uniform buffer objects', but that is something we'll discuss in the 'Advanced GLSL' tutorial.
+    */
+    // directional light
 
-    // material properties
-    lightingShader.SetInt("material.diffuse", 0);
-    lightingShader.SetInt("material.specular", 1);
-    lightingShader.SetFloat("material.shininess", 64.0f);
+    // point light 1
+
+    // point light 2
+
+    // point light 3
+
+    // point light 4
+
+    // spotLight
+    
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(
@@ -222,24 +318,43 @@ void App::Draw()
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, specularMap.id);
 
-    // render the cube
+    // material properties
+    lightingShader.SetInt("material.diffuse", 0);
+    lightingShader.SetInt("material.specular", 1);
+    lightingShader.SetFloat("material.shininess", 32.0f);
+
+    // render containers
     glBindVertexArray(cubeVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    for (unsigned int i = 0; i < 10; i++)
+    {
+        // calculate the model matrix for each object and pass it to shader before drawing
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, cubePositions[i]);
+        float angle = 20.0f * i;
+        model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+        lightingShader.SetMat4("model", model);
+
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
     lightingShader.UnUse();
 
-
     // also draw the lamp object
-    lightCubeShader.Use();
+    /*lightCubeShader.Use();
     lightCubeShader.SetMat4("projection", projection);
     lightCubeShader.SetMat4("view", view);
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, lightPos);
-    model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-    lightCubeShader.SetMat4("model", model);
-
+    // we now draw as many light bulbs as we have point lights.
     glBindVertexArray(lightCubeVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    lightCubeShader.Use();
+    glBindBuffer(GL_ARRAY_BUFFER, lightVBO);
+    for (unsigned int i = 0; i < 4; i++)
+    {
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, pointLightPositions[i]);
+        model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
+        lightCubeShader.SetMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+    lightCubeShader.Use();*/
 }
 
 void App::LateUpdate() {}
