@@ -286,17 +286,33 @@ void App::Draw()
         by using 'Uniform buffer objects', but that is something we'll discuss in the 'Advanced GLSL' tutorial.
     */
     // directional light
-
-    // point light 1
-
-    // point light 2
-
-    // point light 3
-
-    // point light 4
-
+    lightingShader.SetVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+    lightingShader.SetVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+    lightingShader.SetVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+    lightingShader.SetVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+    // point light 1 - 4
+    for (int index = 0; index < 4; index++)
+    {
+        lightingShader.SetVec3("pointLights[" + std::to_string(index) + "].position", pointLightPositions[index]);
+        lightingShader.SetVec3("pointLights[" + std::to_string(index) + "].ambient", 0.05f, 0.05f, 0.05f);
+        lightingShader.SetVec3("pointLights[" + std::to_string(index) + "].diffuse", 0.8f, 0.8f, 0.8f);
+        lightingShader.SetVec3("pointLights[" + std::to_string(index) + "].specular", 1.0f, 1.0f, 1.0f);
+        lightingShader.SetFloat("pointLights[" + std::to_string(index) + "].constant", 1.0f);
+        lightingShader.SetFloat("pointLights[" + std::to_string(index) + "].linear", 0.09f);
+        lightingShader.SetFloat("pointLights[" + std::to_string(index) + "].quadratic", 0.032f);
+    }
     // spotLight
-    
+    lightingShader.SetVec3("spotLight.position", camera.Position);
+    lightingShader.SetVec3("spotLight.direction", camera.Front);
+    lightingShader.SetVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+    lightingShader.SetVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+    lightingShader.SetVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+    lightingShader.SetFloat("spotlight.constant", 1.0f);
+    lightingShader.SetFloat("spotlight.linear", 1.0f);
+    lightingShader.SetFloat("spotlight.quadratic", 0.032f);
+    lightingShader.SetFloat("spotlight.cutOff", glm::cos(glm::radians(12.5f)));
+    lightingShader.SetFloat("spotlight.outerCutOff", glm::cos(glm::radians(20.0f)));
+
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(
