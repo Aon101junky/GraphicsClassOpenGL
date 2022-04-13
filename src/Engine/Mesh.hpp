@@ -21,12 +21,12 @@ namespace Engine
         glm::vec3 Bitangent;
         int m_BoneIDs[MAX_BONE_INFLUENCE];
         float m_Weights[MAX_BONE_INFLUENCE];
-    }
+    };
 
     struct Mesh_Texture
     {
         unsigned int id;
         std::string type;
         std::string path;
-    }
+    };
 }
