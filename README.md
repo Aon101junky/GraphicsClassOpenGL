@@ -4,6 +4,8 @@ git clone --recursive https://github.com/Aon101junky/GraphicsClassOpenGL.git
 -or-
 git clone --recursive git@github.com:EricWRogers/learnopengl-template.git
 
+git submodule update --init --recursive
+
 
 ## DEPENDENCES
 
