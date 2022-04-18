@@ -97,6 +97,8 @@ void App::Run()
     window.Create("Engine", 800, 600, windowFlags);
 
     // Lock Mouse
+    SDL_CaptureMouse(SDL_TRUE);
+    SDL_SetRelativeMouseMode(SDL_TRUE);
 
     Load();
 
@@ -111,8 +113,15 @@ void App::Load()
     glEnable(GL_DEPTH_TEST);
 
     // load shader
+    modelShader.Compile("assets/shaders/1.model_loading.vs", "assets/shaders/1.model_loading.fs");
+    modelShader.AddAttribute("aPos");
+    modelShader.AddAttribute("aNormal");
+    modelShader.AddAttribute("aTexCoords");
+    modelShader.Link();
 
     // load model
+    stbi_set_flip_vertically_on_load(true);
+    model.LoadModel("assets/models/backpack/backpack.obj");
 
     // start timer
     previousTime = high_resolution_clock::now();
@@ -158,6 +167,13 @@ void App::Update()
     }
 
     // Toggle Mouse Lock
+    if (inputManager.isKeyPressed(SDLK_ESCAPE))
+    {
+        mouseLock != mouseLock;
+
+        SDL_CaptureMouse((int)mouseLock);
+        SDL_SetRelativeMouseMode((int)mouseLock);
+    }
 }
 void App::Draw()
 {

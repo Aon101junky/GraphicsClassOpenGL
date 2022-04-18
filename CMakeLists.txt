@@ -10,6 +10,7 @@ add_subdirectory(external/glfw)
 add_subdirectory(external/glm)
 add_subdirectory(external/SDL)
 add_subdirectory(external/stb)
+add_subdirectory(external/assimp)
 
 file(GLOB_RECURSE SRC_SOURCES src/*.c*)
 file(GLOB_RECURSE SRC_HEADERS src/*.h*)
@@ -23,6 +24,7 @@ target_link_libraries(${PROJECT_NAME}
         glm
         stb
         libglew_static
+        assimp
         SDL2main
         SDL2-static
 	glad
@@ -33,6 +35,7 @@ target_include_directories(${PROJECT_NAME}
         glfw
         glm
         stb
+        assimp
         SDL2main
         SDL2-static
 	glad
