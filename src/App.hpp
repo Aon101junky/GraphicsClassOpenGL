@@ -11,6 +11,7 @@
 #include "Engine/Window.hpp"
 #include "Engine/Shader.hpp"
 #include "Engine/Camera.hpp"
+#include "Engine/Model.hpp"
 #include "Engine/IOManager.hpp"
 #include "Engine/InputManager.hpp"
 #include "Engine/Data/GLTexture.hpp"
@@ -49,21 +50,13 @@ private:
 
     Engine::Window window;
 
-    Engine::Shader lightingShader;
+    Engine::Shader modelShader;
 
-    Engine::Shader lightCubeShader;
+    Engine::Model model;
 
     Engine::Camera camera = Engine::Camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
     Engine::InputManager inputManager;
-
-    // move out to external class
-    unsigned int vertexShader;
-    unsigned int shaderProgram;
-    unsigned int VBO, cubeVAO, lightCubeVAO, EBO, lightVBO;
-
-    Engine::GLTexture diffuseMap = {};
-    Engine::GLTexture specularMap = {};
 
     high_resolution_clock::time_point currentTime;
     high_resolution_clock::time_point previousTime;
