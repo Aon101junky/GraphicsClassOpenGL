@@ -268,7 +268,7 @@ void App::Draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // don't forget to enable shader before setting uniforms
-    modelShader.Use()
+    modelShader.Use();
     
 
     // view/projection transformations
@@ -283,8 +283,17 @@ void App::Draw()
     modelTransform = glm::scale(modelTransform, glm::vec3(1.0f));
     modelShader.SetMat4("model", modelTransform);
     model.Draw(modelShader);
+    modelShader.UnUse();
     
     // render text
+    textShader.Use();
+    projection = glm::ortho(0.0f,
+        static_cast<float>(window.GetScreenWidth()),
+        0.0f,
+        static_cast<float>(window.GetScreenHeight()));
+    textShader.SetMat4("Projection", projection);
+    RenderText(textShader, "Hello World!", 25.0f, 25.0f, 1.0f, glm::vec3(0.5f, 0.8f, 0.2f));
+    textShader.UnUse();
 }
 
 void App::LateUpdate() {}
