@@ -25,6 +25,7 @@ target_link_libraries(${PROJECT_NAME}
         stb
         libglew_static
         assimp
+        freetype2
         SDL2main
         SDL2-static
 	glad
@@ -36,6 +37,7 @@ target_include_directories(${PROJECT_NAME}
         glm
         stb
         assimp
+        freetype2
         SDL2main
         SDL2-static
 	glad

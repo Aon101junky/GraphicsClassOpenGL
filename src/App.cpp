@@ -268,11 +268,21 @@ void App::Draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // don't forget to enable shader before setting uniforms
+    modelShader.Use()
     
 
     // view/projection transformations
+    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)window.GetScreenWidth() / (float)window.GetScreenHeight(), 0.1f, 100.0f);
+    glm::mat4 view = camera.GetViewMatrix();
+    modelShader.SetMat4("Projection", projection);
+    modelShader.SetMat4("view", view);
 
     // render the loaded model
+    glm::mat4 modelTransform = glm::mat4(1.0f);
+    modelTransform = glm::translate(modelTransform, glm::vec3(0.0f));
+    modelTransform = glm::scale(modelTransform, glm::vec3(1.0f));
+    modelShader.SetMat4("model", modelTransform);
+    model.Draw(modelShader);
     
     // render text
 }
