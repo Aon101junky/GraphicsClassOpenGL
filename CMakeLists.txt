@@ -11,6 +11,8 @@ add_subdirectory(external/glm)
 add_subdirectory(external/SDL)
 add_subdirectory(external/stb)
 add_subdirectory(external/assimp)
+add_subdirectory(external/freetype2)
+include_directories("${PROJECT_SCOURCE_DIR}/external/freetype2/include")
 
 file(GLOB_RECURSE SRC_SOURCES src/*.c*)
 file(GLOB_RECURSE SRC_HEADERS src/*.h*)
