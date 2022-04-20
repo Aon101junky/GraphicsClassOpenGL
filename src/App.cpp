@@ -274,7 +274,7 @@ void App::Draw()
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)window.GetScreenWidth() / (float)window.GetScreenHeight(), 0.1f, 100.0f);
     glm::mat4 view = camera.GetViewMatrix();
-    modelShader.SetMat4("Projection", projection);
+    modelShader.SetMat4("projection", projection);
     modelShader.SetMat4("view", view);
 
     // render the loaded model
@@ -291,7 +291,7 @@ void App::Draw()
         static_cast<float>(window.GetScreenWidth()),
         0.0f,
         static_cast<float>(window.GetScreenHeight()));
-    textShader.SetMat4("Projection", projection);
+    textShader.SetMat4("projection", projection);
     RenderText(textShader, "Hello World!", 25.0f, 25.0f, 1.0f, glm::vec3(0.5f, 0.8f, 0.2f));
     textShader.UnUse();
 }
