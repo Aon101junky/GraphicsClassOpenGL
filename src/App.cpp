@@ -114,11 +114,19 @@ void App::Load()
     // configure global opengl state
     glEnable(GL_DEPTH_TEST);
 
-    modelShader.Compile("assets/shaders/1.model_loading.vs","assets/shaders/1.model_loading.fs");
-    modelShader.AddAttribute("aPos");
-    modelShader.AddAttribute("aNormal");
-    modelShader.AddAttribute("aTexCoords");
-    modelShader.Link();
+    asteroidShader.Compile("assets/shaders/10.3.asteroids.vs","assets/shaders/10.3.asteroids.fs");
+    asteroidShader.AddAttribute("aPos");
+    asteroidShader.AddAttribute("aNormal");
+    asteroidShader.AddAttribute("aTexCoords");
+    asteroidShader.AddAttribute("aInstanceMatrix");
+    asteroidShader.Link();
+
+    planetShader.Compile("assets/shaders/10.3.planet.vs","assets/shaders/10.3.planet.fs");
+    planetShader.AddAttribute("aPos");
+    planetShader.AddAttribute("aNormal");
+    planetShader.AddAttribute("aTexCoords");
+    planetShader.AddAttribute("aInstanceMatrix");
+    planetShader.Link();
 
     textShader.Compile("assets/shaders/text.vs", "assets/shaders/text.fs");
     textShader.AddAttribute("vertex");
@@ -126,7 +134,71 @@ void App::Load()
 
     // load model
     stbi_set_flip_vertically_on_load(true);
-    model.LoadModel("assets/models/backpack/backpack.obj");
+    rock.LoadModel("assets/models/rock/rock.obj");
+    planet.LoadModel("assets/models/planet/planet.obj");
+
+    // generate a large list of semi-random model transformation matrices
+    // ------------------------------------------------------------------
+    modelMatrices = new glm::mat4[amount];
+    srand(static_cast<unsigned int>(SDL_GetTicks())); // initialize random seed
+    float radius = 150.0;
+    float offset = 25.0f;
+    for (unsigned int i = 0; i < amount; i++)
+    {
+        glm::mat4 model = glm::mat4(1.0f);
+        // 1. translation: displace along circle with 'radius' in range [-offset, offset]
+        float angle = (float)i / (float)amount * 360.0f;
+        float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+        float x = sin(angle) * radius + displacement;
+        displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+        float y = displacement * 0.4f; // keep height of asteroid field smaller compared to width of x and z
+        displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+        float z = cos(angle) * radius + displacement;
+        model = glm::translate(model, glm::vec3(x, y, z));
+
+        // 2. scale: Scale between 0.05 and 0.25f
+        float scale = static_cast<float>((rand() % 20) / 100.0 + 0.05);
+        model = glm::scale(model, glm::vec3(scale));
+
+        // 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
+        float rotAngle = static_cast<float>((rand() % 360));
+        model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+
+        // 4. now add to list of matrices
+        modelMatrices[i] = model;
+    }
+
+    // configure instanced array
+    // -------------------------
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
+
+    // set transformation matrices as an instance vertex attribute (with divisor 1)
+    // note: we're cheating a little by taking the, now publicly declared, VAO of the model's mesh(es) and adding new vertexAttribPointers
+    // normally you'd want to do this in a more organized fashion, but for learning purposes this will do.
+    // -----------------------------------------------------------------------------------------------------------------------------------
+    for (unsigned int i = 0; i < rock.meshes.size(); i++)
+    {
+        VAO = rock.meshes[i].VAO;
+        glBindVertexArray(VAO);
+        // set attribute pointers for matrix (4 times vec4)
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0);
+        glEnableVertexAttribArray(4);
+        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)));
+        glEnableVertexAttribArray(5);
+        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(2 * sizeof(glm::vec4)));
+        glEnableVertexAttribArray(6);
+        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(3 * sizeof(glm::vec4)));
+
+        glVertexAttribDivisor(3, 1);
+        glVertexAttribDivisor(4, 1);
+        glVertexAttribDivisor(5, 1);
+        glVertexAttribDivisor(6, 1);
+
+        glBindVertexArray(0);
+    }
 
     // FreeType
     // --------
@@ -190,12 +262,12 @@ void App::Load()
     FT_Done_FreeType(ft);
 
     
-    // configure VAO/VBO for texture quads
+    // configure VAOText/VBOText for texture quads
     // -----------------------------------
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glGenVertexArrays(1, &VAOText);
+    glGenBuffers(1, &VBOText);
+    glBindVertexArray(VAOText);
+    glBindBuffer(GL_ARRAY_BUFFER, VBOText);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
@@ -266,33 +338,26 @@ void App::Draw()
 {
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    // don't forget to enable shader before setting uniforms
-    modelShader.Use();
-    
 
-    // view/projection transformations
-    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)window.GetScreenWidth() / (float)window.GetScreenHeight(), 0.1f, 100.0f);
+    // configure transformation matrices
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)window.GetScreenWidth() / (float)window.GetScreenHeight(), 0.1f, 1000.0f);
     glm::mat4 view = camera.GetViewMatrix();
-    modelShader.SetMat4("projection", projection);
-    modelShader.SetMat4("view", view);
 
-    // render the loaded model
-    glm::mat4 modelTransform = glm::mat4(1.0f);
-    modelTransform = glm::translate(modelTransform, glm::vec3(0.0f));
-    modelTransform = glm::scale(modelTransform, glm::vec3(1.0f));
-    modelShader.SetMat4("model", modelTransform);
-    model.Draw(modelShader);
-    modelShader.UnUse();
+
+    planetShader.Use();
+    planetShader.SetMat4("projection", projection);
+    planetShader.SetMat4("view", view);
     
-    // render text
+    
+    // draw planet
+
+    // draw meteorites
+    
+    // draw delta time text
     textShader.Use();
-    projection = glm::ortho(0.0f,
-        static_cast<float>(window.GetScreenWidth()),
-        0.0f,
-        static_cast<float>(window.GetScreenHeight()));
-    textShader.SetMat4("projection", projection);
-    RenderText(textShader, "Hello World!", 25.0f, 25.0f, 1.0f, glm::vec3(0.5f, 0.8f, 0.2f));
+    projection = glm::ortho(0.0f, static_cast<float>(window.GetScreenWidth()), 0.0f, static_cast<float>(window.GetScreenHeight()));
+    glUniformMatrix4fv(glGetUniformLocation(textShader.GetProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    RenderText(textShader, std::to_string(deltaTime), 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
     textShader.UnUse();
 }
 
@@ -329,7 +394,7 @@ void App::RenderText(Engine::Shader &shader, std::string text, float x, float y,
     shader.Use();
     glUniform3f(glGetUniformLocation(shader.GetProgramID(), "textColor"), color.x, color.y, color.z);
     glActiveTexture(GL_TEXTURE0);
-    glBindVertexArray(VAO);
+    glBindVertexArray(VAOText);
 
     // iterate through all characters
     std::string::const_iterator c;
@@ -342,7 +407,7 @@ void App::RenderText(Engine::Shader &shader, std::string text, float x, float y,
 
         float w = ch.Size.x * scale;
         float h = ch.Size.y * scale;
-        // update VBO for each character
+        // update VBOText for each character
         float vertices[6][4] = {
             { xpos,     ypos + h,   0.0f, 0.0f },            
             { xpos,     ypos,       0.0f, 1.0f },
@@ -354,8 +419,8 @@ void App::RenderText(Engine::Shader &shader, std::string text, float x, float y,
         };
         // render glyph texture over quad
         glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-        // update content of VBO memory
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        // update content of VBOText memory
+        glBindBuffer(GL_ARRAY_BUFFER, VBOText);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // be sure to use glBufferSubData and not glBufferData
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);

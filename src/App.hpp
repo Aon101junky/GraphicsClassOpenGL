@@ -63,12 +63,14 @@ private:
 
     Engine::Window window;
 
-    Engine::Shader modelShader;
+    Engine::Shader asteroidShader;
+    Engine::Shader planetShader;
     Engine::Shader textShader;
 
-    Engine::Model model;
+    Engine::Model rock;
+    Engine::Model planet;
 
-    Engine::Camera camera = Engine::Camera(glm::vec3(0.0f, 0.0f, 3.0f));
+    Engine::Camera camera = Engine::Camera(glm::vec3(0.0f, 0.0f, 300.0f));
 
     Engine::InputManager inputManager;
 
@@ -77,13 +79,17 @@ private:
 
     float deltaTime;
 
+    bool mouseLock = true;
+
     std::map<GLchar, Character> Characters;
 
     FT_Library ft;
 
     FT_Face face;
 
-    unsigned int VAO, VBO;
+    unsigned int VAOText, VBOText, VAO, VBO, buffer;
 
-    bool mouseLock = true;
+    glm::mat4* modelMatrices;
+
+    unsigned int amount = 1000;
 };
