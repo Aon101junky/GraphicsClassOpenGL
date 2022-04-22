@@ -350,8 +350,27 @@ void App::Draw()
     
     
     // draw planet
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(8.0f));
+    planetShader.SetMat4("model", model);
+    planet.Draw(planetShader);
+    planetShader.UnUse();
 
     // draw meteorites
+    asteroidShader.Use();
+    asteroidShader.SetMat4("projection", projection);
+    asteroidShader.SetMat4("view", view);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, rock.textures_loaded[0].id);
+    asteroidShader.SetInt("texture_diffuse1", 0);
+    for (int i = 0; i < rock.meshes.size(); i++)
+    {
+        glBindVertexArray(rock.meshes[i].VAO);
+        // glDrawArrayInstanced();
+        glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(rock.meshes[i].indices.size()), GL_UNSIGNED_INT, 0, amount);
+        glBindVertexArray(0);
+    }
     
     // draw delta time text
     textShader.Use();

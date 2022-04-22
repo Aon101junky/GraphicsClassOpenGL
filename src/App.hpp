@@ -91,5 +91,5 @@ private:
 
     glm::mat4* modelMatrices;
 
-    unsigned int amount = 1000;
+    unsigned int amount = 100000;
 };
