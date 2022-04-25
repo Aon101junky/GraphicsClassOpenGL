@@ -58,6 +58,7 @@ private:
     void FixedUpdate(float dt);
     void InputUpdate();
     void RenderText(Engine::Shader &shader, std::string text, float x, float y, float scale, glm::vec3 color);
+    unsigned int App::loadCubemap(std::vector<std::string> faces);
 
     AppState appState = AppState::OFF;
 
@@ -66,6 +67,8 @@ private:
     Engine::Shader asteroidShader;
     Engine::Shader planetShader;
     Engine::Shader textShader;
+    Engine::Shader cubeShader;
+    Engine::Shader skyboxShader;
 
     Engine::Model rock;
     Engine::Model planet;
@@ -73,6 +76,8 @@ private:
     Engine::Camera camera = Engine::Camera(glm::vec3(0.0f, 0.0f, 300.0f));
 
     Engine::InputManager inputManager;
+
+    Engine::GLTexture cubeTexture;
 
     high_resolution_clock::time_point currentTime;
     high_resolution_clock::time_point previousTime;
@@ -87,9 +92,11 @@ private:
 
     FT_Face face;
 
-    unsigned int VAOText, VBOText, VAO, VBO, buffer;
+    unsigned int VAOText, VBOText, VAO, VBO, buffer, cubeVAO, cubeVBO, skyboxVAO, skyboxVBO;
 
+    unsigned int cubemapTexture;
+    
     glm::mat4* modelMatrices;
 
-    unsigned int amount = 100000;
+    unsigned int amount = 1000;
 };
