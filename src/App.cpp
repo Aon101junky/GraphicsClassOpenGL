@@ -187,6 +187,15 @@ void App::Load()
     cubeTexture = Engine::LoadPNGToGLTexture("assets/textures/container.png", GL_RGBA, GL_RGBA);
 
     //sky box textures
+    std::vector<std::string> faces
+    {
+        "assets/textures/skybox_left.png",
+        "assets/textures/skybox_right.png",
+        "assets/textures/skybox_up.png",
+        "assets/textures/skybox_down.png",
+        "assets/textures/skybox_front.png",
+        "assets/textures/skybox_back.png"
+    };
 
     cubemapTexture = loadCubemap(faces);
 
@@ -269,6 +278,13 @@ void App::Load()
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     // skybox VAO
+    glGenVertexArrays(1, &skyboxVAO);
+    glGenBuffers(1, &skyboxVBO);
+    glBindVertexArray(skyboxVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     
 
 
@@ -458,8 +474,19 @@ void App::Draw()
     glBindVertexArray(0);
 
     // draw skybox as last
+    glDepthFunc(GL_LEQUAL);
+    skyboxShader.Use();
+    view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
+    skyboxShader.SetMat4("view", view);
+    skyboxShader.SetMat4("projection", projection);
     
     // skybox cube
+    glBindVertexArray(skyboxVAO);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);
+    glDepthFunc(GL_LESS);
     
     // Draw Text
     textShader.Use();
