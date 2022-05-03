@@ -139,11 +139,11 @@ void App::Run()
     // windowFlags |= Engine::WindowFlags::BORDERLESS;
 
 
-    window.Create("Engine", 800, 600, windowFlags);
+    window.Create("Aaron's Final Project", 800, 600, windowFlags);
 
     // lock mouse
-    SDL_CaptureMouse(SDL_TRUE);
-    SDL_SetRelativeMouseMode(SDL_TRUE);
+    //SDL_CaptureMouse(SDL_TRUE);
+    //SDL_SetRelativeMouseMode(SDL_TRUE);
 
     Load();
 
@@ -403,7 +403,7 @@ void App::Update()
     {
         camera.ProcessKeyboard(Engine::Camera_Movement::RIGHT, deltaTime);
     }
-
+    /*
     // Toggle Mouse Lock
     if (inputManager.isKeyPressed(SDLK_ESCAPE))
     {
@@ -420,6 +420,7 @@ void App::Update()
             SDL_SetRelativeMouseMode(SDL_FALSE);
         }
     }
+    */
 }
 void App::Draw()
 {
@@ -492,7 +493,10 @@ void App::Draw()
     textShader.Use();
     projection = glm::ortho(0.0f, static_cast<float>(window.GetScreenWidth()), 0.0f, static_cast<float>(window.GetScreenHeight()));
     glUniformMatrix4fv(glGetUniformLocation(textShader.GetProgramID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-    RenderText(textShader, std::to_string(deltaTime), 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+    //RenderText(textShader, std::to_string(deltaTime), 25.0f, 25.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    RenderText(textShader, "Open GL In Space!", 25.0f, 525.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    RenderText(textShader, "Play", 25.0f, 450.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    RenderText(textShader, "Exit", 25.0f, 375.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
     textShader.UnUse();
 }
 void App::LateUpdate() {}
@@ -507,16 +511,36 @@ void App::InputUpdate()
         case SDL_QUIT:
             appState = AppState::OFF;
             break;
-        case SDL_MOUSEMOTION:
+        /*case SDL_MOUSEMOTION:
             camera.ProcessMouseMovement(
                 event.motion.xrel,
                 -event.motion.yrel);
             break;
+        */
         case SDL_KEYUP:
             inputManager.releasedKey(event.key.keysym.sym);
             break;
         case SDL_KEYDOWN:
             inputManager.pressKey(event.key.keysym.sym);
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            SDL_GetMouseState(&X, &Y);
+            //std::cout << "Clicked" << std::endl;
+            //std::cout << std::to_string(X) << std::endl;
+            //std::cout << std::to_string(Y) << std::endl;
+            if(X>30 && X<343 && Y>34 && Y<80)
+            {
+                std::cout << "That's the title" << std::endl;
+            }
+            if(X>30 && X<100 && Y>110 && Y<150)
+            {
+                std::cout << "Play" << std::endl;
+            }
+            if(X>30 && X<90 && Y>180 && Y<225)
+            {
+                //std::cout << "Quit" << std::endl;
+                exit(0);
+            }
             break;
         }
     }

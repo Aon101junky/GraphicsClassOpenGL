@@ -99,4 +99,7 @@ private:
     glm::mat4* modelMatrices;
 
     unsigned int amount = 1000;
+
+    int X;
+    int Y;
 };
